@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with: 
-          repository: https://github.com/jambox-digital/jambox-project.git
+          repository: jambox-digital/jambox-flavours
           token: ${{ secrets.PRIVATE_ACCESS_TOKEN }}
           submodules: true
 
