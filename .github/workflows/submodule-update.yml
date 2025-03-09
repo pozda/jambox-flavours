@@ -13,6 +13,14 @@ jobs:
     - name: Checkout the library repository
       uses: actions/checkout@v2
 
+    - name: Set up SSH key for GitHub authentication
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github-actions-key
+        chmod 600 ~/.ssh/github-actions-key
+        # Ensure the SSH host verification is disabled (GitHub's SSH keys are already trusted)
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+
     - name: Notify Projects
       run: |
         # Add the remote URL of your projects that use the library as a submodule
@@ -32,7 +40,7 @@ jobs:
           git submodule update --init --recursive
 
           # Create a commit that updates the submodule
-          git add libs/component-library
+          git add jambox-flavours
           git commit -m "Update component-library submodule to latest version"
           git push origin main
 
