@@ -1,0 +1,40 @@
+name: Submodule Update Notification
+
+on:
+  push:
+    branches:
+      - main  # Trigger this action only when pushing to the `main` branch.
+
+jobs:
+  notify-projects:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the library repository
+      uses: actions/checkout@v2
+
+    - name: Notify Projects
+      run: |
+        # Add the remote URL of your projects that use the library as a submodule
+        # Replace these with the correct repo URLs
+        project_repos=(
+          "git@github.com:jambox-digital/jambox-project.git"
+        )
+
+        # Loop through the project repositories and create a pull request or notification
+        for repo in "${project_repos[@]}"; do
+          git clone $repo project_repo
+          cd project_repo
+
+          # Fetch latest updates and update the submodule
+          git checkout main
+          git pull origin main
+          git submodule update --init --recursive
+
+          # Create a commit that updates the submodule
+          git add libs/component-library
+          git commit -m "Update component-library submodule to latest version"
+          git push origin main
+
+          cd ..
+        done
